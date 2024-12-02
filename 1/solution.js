@@ -19,8 +19,8 @@ function solution1() {
 function solution2() {
     let [A, B] = getInput();
     let frequencies = B.reduce((freqs, b) => {
-        let freq = freqs[b] || 0;
-        freqs[b] = freq + 1;
+        freqs[b] ??= 0;
+        freqs[b]++;
         return freqs;
     }, {});
     
@@ -38,7 +38,7 @@ function getInput() {
             .readFileSync('./input', 'utf8')
             .split('\n')
             .filter(s => s.trim())
-            .map(s => s.match(/(\d+)\s+(\d+)/).slice(1).map(snum => +snum));  
+            .map(s => s.match(/\d+/g).map(snum => +snum));  
 
         const A = data.map(pair => pair[0]);
         const B = data.map(pair => pair[1]);
