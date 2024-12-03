@@ -16,12 +16,11 @@ function solution1() {
 function solution2() {
     let input = getInput();
     
-    let c = input.split('do()')
+    let toDo = input.split('do()')
         .map(doStr => doStr.split("don\'t()")[0])
-        .map(process)
-        .reduce((sum, x) => sum + x, 0);
+        .join('');
     
-    console.log(c);
+    console.log(process(toDo));
 }
 
 function getInput() {
