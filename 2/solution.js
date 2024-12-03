@@ -16,20 +16,17 @@ function solution1() {
     console.log(count);
 }
 
-
 function solution2() {
     let input = getInput();
     let count = input.filter(report => {
-        if (isReportValid(report)) {
-            return true;
-        } else {
-            for (let i = 0; i < report.length; i++) {
-                if (isReportValid(report.slice(0, i).concat(report.slice(i + 1)))) {
-                    return true;
-                }
+        if (isReportValid(report)) return true;
+        
+        for (let i = 0; i < report.length; i++) {
+            if (isReportValid(report.slice(0, i).concat(report.slice(i + 1)))) {
+                return true;
             }
         }
-
+    
         return false;
     }).length;
 
