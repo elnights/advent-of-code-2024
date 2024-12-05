@@ -19,10 +19,10 @@ function solution() {
         update = update.split(',').map(Number);
     
         if (update.every((page, i) => i === update.length - 1 || isBefore(page, update[i+1]))) {
-            result1 += update[Math.floor(update.length / 2)];
+            result1 += update[update.length >> 1];
         } else {
             update.sort((a, b) => isBefore(a, b) ? -1 : 1);
-            result2 += update[Math.floor(update.length / 2)];
+            result2 += update[update.length >> 1];
         }
     });
 
