@@ -7,11 +7,10 @@ log(solution2(getInput()));
 
 function solution1(input) {
     return countVisitedCells(input);
-
 }
 
 function solution2(input) {
-   return findCycleObstaclePositions(input);
+    return findCycleObstaclePositions(input);
 }
 
 function findCycleObstaclePositions(mapArray) {
@@ -142,7 +141,6 @@ function countVisitedCells(mapArray) {
     ];
     const dirSymbols = ['^', '>', 'v', '<'];
 
-    
     let guardPos = null;
     let currentDir = null;
 
