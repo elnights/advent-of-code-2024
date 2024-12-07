@@ -4,7 +4,6 @@ log(solution1(getInput()));
 log(solution2(getInput()));
 
 
-
 function solution1(input) {
     return countVisitedCells(input);
 }
