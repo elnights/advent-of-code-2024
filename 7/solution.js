@@ -31,9 +31,8 @@ function solution2(input) {
     }
 
     function applyOperators(numbers, operators) {
-        let currOpIndex = 0;
-        return numbers.reduce((a, b) => {
-            switch(operators[currOpIndex++]) {
+        return numbers.reduce((a, b, i) => {
+            switch(operators[i - 1]) {
                 case '0': return a + b;
                 case '1': return a * b;
                 case '2': return concatIntegers(a, b);
