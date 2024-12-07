@@ -29,18 +29,26 @@ function solution2() {
     
         for (let i = 0; i < max; i++) {
             // Convert number to a base-N string and pad with zeros to length n
-            const baseString = i.toString(symbols.length).padStart(n, "0");
+            const baseString = i.toString(symbols.length).padStart(n, '0');
     
             // Map digits from base-0 (0,1,2) to symbols
             yield [...baseString].map(d => symbols[d]);
         }
     }
 
+    function concatIntegers(a, b) {
+        let multiplier = 1;
+        while (multiplier <= b) {
+            multiplier *= 10;
+        }
+        return a * multiplier + b;
+    }
+
     function applyOperators(numbers, operators) {
         let currOpIndex = 0;
         return numbers.reduce((a, b) => {
             switch(operators[currOpIndex++]) {
-                case '|': return +(a.toString() + b.toString());
+                case '|': return concatIntegers(a, b);
                 case '+': return a + b;
                 case '*': return a * b;
             }
@@ -51,9 +59,9 @@ function solution2() {
         const numbers = str.split(' ').map(Number);
         const valueNum = +value;
 
-        for (const combination of combinations(numbers.length - 1, ['+', '*', '|'])) 
+        for (const combination of combinations(numbers.length - 1, ['+', '*', '|']))
             if (applyOperators(numbers, combination) === valueNum) return result + valueNum;
-        
+                   
         return result;
     }, 0);
 
