@@ -1,15 +1,15 @@
 const { log } = require('node:console');
 
-solution1();
-solution2();
+log(solution1(getInput()));
+log(solution2(getInput()));
 
-function solution1() {
+function solution1(input) {
     function applyOperators(numbers, opBitbap) {
         let currOpIndex = 0;
         return numbers.reduce((a, b) => 1 << currOpIndex++ & opBitbap ? a + b : a * b);
     }
 
-    const result = getInput().reduce((result, [value, str]) => {
+    return input.reduce((result, [value, str]) => {
         const numbers = str.split(' ').map(Number);
         const valueNum = +value;
         const operatorsBitmap = 2 ** (numbers.length - 1) - 1;
@@ -19,23 +19,9 @@ function solution1() {
         }
         return result;
     }, 0);
-
-    log(result);
 }
 
-function solution2() {
-    function* combinations(n, symbols) {
-        const max = Math.pow(symbols.length, n); // Total number of combinations
-    
-        for (let i = 0; i < max; i++) {
-            // Convert number to a base-N string and pad with zeros to length n
-            const baseString = i.toString(symbols.length).padStart(n, '0');
-    
-            // Map digits from base-0 (0,1,2) to symbols
-            yield [...baseString].map(d => symbols[d]);
-        }
-    }
-
+function solution2(input) {
     function concatIntegers(a, b) {
         let multiplier = 1;
         while (multiplier <= b) {
@@ -48,24 +34,29 @@ function solution2() {
         let currOpIndex = 0;
         return numbers.reduce((a, b) => {
             switch(operators[currOpIndex++]) {
-                case '|': return concatIntegers(a, b);
-                case '+': return a + b;
-                case '*': return a * b;
+                case '0': return a + b;
+                case '1': return a * b;
+                case '2': return concatIntegers(a, b);
             }
         });
     }
 
-    const result = getInput().reduce((result, [value, str]) => {
+    return input.reduce((result, [value, str]) => {
         const numbers = str.split(' ').map(Number);
         const valueNum = +value;
+        const operatorCount = numbers.length - 1;
 
-        for (const combination of combinations(numbers.length - 1, ['+', '*', '|']))
+        const conbinationCount = Math.pow(3, operatorCount); // Total number of combinations
+
+        for (let i = 0; i < conbinationCount; i++) {
+            // Convert number to a base-3 string and pad with zeros to length n
+            let combination = i.toString(3).padStart(operatorCount, '0');
+
             if (applyOperators(numbers, combination) === valueNum) return result + valueNum;
-                   
+        }
+                
         return result;
     }, 0);
-
-    log(result);
 }
 
 function getInput() { 
