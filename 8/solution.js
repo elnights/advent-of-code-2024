@@ -35,13 +35,12 @@ function solution(input, resonantHarmonics = false) {
 
     return antinodes.size;
 
-    function checkBoundaries(x, y) {
-        return x >= 0 && x < maxX &&
-            y >= 0 && y < maxY;
-    }
-
     function addAntinode(x, y) {
-        antinodes.add(`${x}:${y}`);
+        if (x >= 0 && x < maxX && y >= 0 && y < maxY) {
+            antinodes.add(`${x}:${y}`);
+            return true;
+        }
+        return false;
     }
 
     function findAntinodes(antennas) {
@@ -54,11 +53,8 @@ function solution(input, resonantHarmonics = false) {
                 const dy = y2 - y1;
     
                 if (!resonantHarmonics) {
-                    const antinode1 = [x1 - dx, y1 - dy];
-                    const antinode2 = [x2 + dx, y2 + dy];
-                    
-                    for (let [x, y] of [antinode1, antinode2]) 
-                        if (checkBoundaries(x, y)) addAntinode(x, y);
+                    addAntinode(x1 - dx, y1 - dy);
+                    addAntinode(x2 + dx, y2 + dy);
                 } else {
                     // Simplify the direction vector using GCD
                     const step = gcd(Math.abs(dx), Math.abs(dy));
@@ -68,8 +64,7 @@ function solution(input, resonantHarmonics = false) {
                     // Step backward from (x1, y1)
                     let x = x1;
                     let y = y1;
-                    while (checkBoundaries(x, y)) {
-                        addAntinode(x, y);
+                    while (addAntinode(x, y)) {
                         x -= stepX;
                         y -= stepY;
                     }
@@ -77,8 +72,7 @@ function solution(input, resonantHarmonics = false) {
                     // Step forward from (x2, y2)
                     x = x2;
                     y = y2;
-                    while (checkBoundaries(x, y)) {
-                        addAntinode(x, y);
+                    while (addAntinode(x, y)) {
                         x += stepX;
                         y += stepY;
                     }
