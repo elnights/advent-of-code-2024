@@ -46,26 +46,24 @@ class Point {
     } 
 }
 
-function solution1(input) {
+function solution(input) {
     let score = 0, rating = 0;
     input.forEach((row, y) => {
         row.forEach((col, x) => {
-            if (col === 0) {
-                let tops = new Set();
-
-                const waysToTop = point => {
-                    if (point.isTop()) {
-                        tops.add(`${point.x},${point.y}`);
-                        return 1;
-                    };
-                    
-                    return point.possibleDirections()
-                        .reduce((ways, direction) => ways + waysToTop(point.step(direction)), 0);
-                }
-
-                rating += waysToTop(new Point(x, y, input));
-                score += tops.size;
+            if (col) return;
+            let tops = new Set();
+            const waysToTop = point => {
+                if (point.isTop()) {
+                    tops.add(`${point.x},${point.y}`);
+                    return 1;
+                };
+                
+                return point.possibleDirections()
+                    .reduce((ways, direction) => ways + waysToTop(point.step(direction)), 0);
             }
+
+            rating += waysToTop(new Point(x, y, input));
+            score += tops.size;
         });
     });
 
@@ -79,4 +77,4 @@ function getInput() {
         .map(s => [...s].map(Number));
 }
 
-log(solution1(getInput()));
+log(solution(getInput()));
