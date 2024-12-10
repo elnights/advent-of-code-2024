@@ -59,9 +59,8 @@ function solution1(input) {
                         return 1;
                     };
                     
-                    return point.possibleDirections().reduce((ways, direction) => {
-                        return ways + waysToTop(point.step(direction))
-                    }, 0);
+                    return point.possibleDirections()
+                        .reduce((ways, direction) => ways + waysToTop(point.step(direction)), 0);
                 }
 
                 rating += waysToTop(new Point(x, y, input));
