@@ -1,50 +1,33 @@
 'use strict';
 
+// Number of corners of each region polygon == number of the region sides
+// So counting the corners. 
+// Checking each corner of each cell. If it's the vertex of corresponding region, do sides++
+
+const DIRECT_VECTORS = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+const DIAGONAL_VECTORS  = [[-1, -1], [-1, 1], [1, 1], [1, -1]];
+
 const { log } = require('node:console');
 
 function solution(grid) {
     const rows = grid.length;
     const cols = grid[0].length;
     const visited = Array.from({ length: rows }, () => Array(cols).fill(false));
+    const isValid = (x, y) => x >= 0 && y >= 0 && x < rows && y < cols;
+    const isSameRegion = (x, y, symbol) => isValid(x, y) && grid[y][x] === symbol;
 
     function isOuterCorner(cx, cy, dx, dy) {
-        const regionChar = grid[cy][cx];
-        const cornerX = cx + dx;
-        const cornerY = cy + dy;
-        const edge1X = cx + dx;
-        const edge1Y = cy;
-        const edge2X = cx;
-        const edge2Y = cy + dy;
-
-        const diagonalOutOfBounds =
-            cornerX < 0 || cornerY < 0 || cornerX >= rows || cornerY >= cols;
-        const diagonalDifferent =
-            diagonalOutOfBounds || grid[cornerY][cornerX] !== regionChar;
-
-        const edge1IsSameRegion =
-            edge1X >= 0 &&
-            edge1Y >= 0 &&
-            edge1X < rows &&
-            edge1Y < cols &&
-            grid[edge1Y][edge1X] === regionChar;
-
-        const edge2IsSameRegion =
-            edge2X >= 0 &&
-            edge2Y >= 0 &&
-            edge2X < rows &&
-            edge2Y < cols &&
-            grid[edge2Y][edge2X] === regionChar;
-
-        return (
-            diagonalDifferent && (edge1IsSameRegion === edge2IsSameRegion)
-            || 
-            !(diagonalDifferent || edge1IsSameRegion || edge2IsSameRegion)
-        );
+        const symbol = grid[cy][cx];
+        const diagonalDifferent = !isSameRegion(cx + dx, cy + dy, symbol);
+        const edge1Matches = isSameRegion(cx + dx, cy, symbol);
+        const edge2Matches = isSameRegion(cx, cy + dy, symbol);
+    
+        return (diagonalDifferent && edge1Matches === edge2Matches) ||
+               !(diagonalDifferent || edge1Matches || edge2Matches);
     }
 
-    function floodFill(x, y) {
+    function scanRegion(x, y) {
         const stack = [[x, y]];
-        visited[y][x] = true;
         const symbol = grid[y][x];
         let area = 0;
         let perimeter = 0;
@@ -52,33 +35,22 @@ function solution(grid) {
 
         while (stack.length > 0) {
             const [cx, cy] = stack.pop();
+            if (visited[cy][cx]) continue;
+            visited[cy][cx] = true;
+
             area++;
-            let edges = 0;
 
-            if (isOuterCorner(cx, cy, -1, -1)) vertices++; // Top-left
-            if (isOuterCorner(cx, cy, -1, 1)) vertices++; // Bottom-left
-            if (isOuterCorner(cx, cy, 1, -1)) vertices++; // Top-right
-            if (isOuterCorner(cx, cy, 1, 1)) vertices++; // Bottom-right
+            vertices += DIAGONAL_VECTORS.filter(([dx, dy]) => isOuterCorner(cx, cy, dx, dy)).length;
 
-            for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) {
+            for (const [dx, dy] of DIRECT_VECTORS) {
                 const nx = cx + dx;
                 const ny = cy + dy;
 
-                if (nx >= 0 && nx < rows && ny >= 0 && ny < cols) {
-                    if (grid[ny][nx] === symbol) {
-                        if (!visited[ny][nx]) {
-                            visited[ny][nx] = true;
-                            stack.push([nx, ny]);
-                        }
-                    } else {
-                        edges++; // Neighbor is a different symbol
-                    }
-                } else {
-                    edges++; // Out of bounds (boundary edge)
-                }
+                if (isSameRegion(nx, ny, symbol))
+                    stack.push([nx, ny]);
+                else
+                    perimeter++;
             }
-
-            perimeter += edges;
         }
 
         return [area, perimeter, vertices];
@@ -88,11 +60,9 @@ function solution(grid) {
 
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
-            if (!visited[i][j]) {
-                const [area, perimeter, vertices] = floodFill(j, i);
-                total += area * perimeter;
-                totalWithDiscount += area * vertices;
-            }
+            const [area, perimeter, vertices] = scanRegion(j, i);
+            total += area * perimeter;
+            totalWithDiscount += area * vertices;
         }
     }
 
