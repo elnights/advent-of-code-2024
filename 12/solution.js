@@ -1,7 +1,7 @@
 'use strict';
 
 // Number of corners of each region polygon == number of the region sides
-// So counting the corners. 
+// Corners are much easier to count than the sides
 // Checking each corner of each cell. If it's the vertex of corresponding region, do sides++
 
 const DIRECT_VECTORS = [[-1, 0], [1, 0], [0, -1], [0, 1]];
