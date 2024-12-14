@@ -26,18 +26,7 @@ function getNewPos(x, y, sx, sy, time){
 }
 
 function solution1(input) {
-    return input
-        .map(r => getNewPos(...r, 100))
-        .reduce((quadrants, [x, y]) => {
-            let midX = width >>> 1;
-            let midY = height >>> 1;
-            if ((midX !== x) && (midY !== y)) {
-                const quadrant = ((x - midX > 0 ? 1 : 0) << 1) + (y - midY > 0 ? 1 : 0);
-                quadrants[quadrant]++;
-            }
-            return quadrants;
-        }, [0, 0, 0, 0])
-        .reduce((acc, q)  => acc * q, 1)
+    return getSafetyFactor(input.map(r => getNewPos(...r, 100)));
 }
 
 function print(positions) {
