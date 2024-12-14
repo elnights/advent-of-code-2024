@@ -2,6 +2,12 @@
 const fs = require('node:fs');
 const { log } = require('node:console');
 
+// I assumed that the moment the image of the Christmas tree appeared
+// coincided with the minimum possible safety factor.
+// Initially, I printed an image of the map every time I found a new minimum safety factor.
+// After a few minima, the Christmas tree appeared, and no new minima were found.
+// At that point, I copied the image to use it for reference and to determine when to stop the search.
+
 const width = 101;
 const height = 103;
 const yolka = fs
